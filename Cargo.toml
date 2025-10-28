@@ -1,0 +1,22 @@
+[package]
+name = "filedb"
+version = "0.1.0"
+edition = "2024"
+description = "mongodb based file database"
+license = "WTFPL"
+license_file = "LICENSE"
+repository = "https://github.com/KonradNoTantoo/filedb"
+readme = "README.md"
+
+[dependencies]
+arc-swap = "1.6.0"
+data-encoding = "2.5.0"
+futures = "0.3.30"
+futures-util = "0.3"
+infer = "0.15.0"
+mime = "0.3.17"
+mongodb = "2.8.0"
+ring = "0.17.7"
+serde = "1.0.193"
+tempfile = "3.8.1"
+tokio = { version = "1.0", features = ["full"] }
