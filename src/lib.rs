@@ -184,7 +184,7 @@ impl FileDB
 
 	pub fn new_file(name: impl AsRef<str>) -> Result<InFile, Box<dyn Error>> { InFile::new(name) }
 
-	pub async fn save(self: &Self, file: InFile) -> Result<Id, Box<dyn Error>>
+	pub async fn save(self: &Self, file: InFile) -> Result<Id, Box<dyn Error + Send + Sync>>
 	{
 		let digest = file.digest.finish();
 		let encoded_digest = HEXLOWER.encode(digest.as_ref());
@@ -310,6 +310,22 @@ impl FileDB
 		}
 
 		Ok(())
+	}
+
+	pub async fn update(self: &Self, digest: id::Id, file: InFile) -> Result<Id, Box<dyn Error + Send + Sync>>
+	{
+		match self.save(file).await
+		{
+			Ok(new_id) =>
+			{
+				if new_id != digest
+				{
+					let _ = self.delete(digest).await;
+				}
+				Ok(new_id)
+			},
+			Err(e) => Err(e)
+		}
 	}
 
 	pub fn get_from_cache(self: &Self, digest: id::Id) -> Option<OutFile>
